@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "web-lookup"
+version = "0.1.0"
+description = "Bundled CLI for the web-lookup skill: grep.app, Microsoft Learn, Tavily, Context7"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp",
+    "tavily-python",
+    "requests",
+    "python-dotenv",
+]
+
+[project.scripts]
+web-lookup = "web_lookup:main"
+
+[tool.setuptools]
+package-dir = { "" = "scripts" }
+py-modules = [
+    "web_lookup",
+    "env_check",
+    "backends",
+    "output",
+]

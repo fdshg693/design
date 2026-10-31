@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant C as クライアント
+    participant A as API タスク
+    participant D as DynamoDB urls
+
+    C->>A: POST /urls { longUrl, expiresAt? }
+    A->>A: 手元のブロックから ID → Base62 "aZ3k9Qx"
+    A->>D: PutItem(code, longUrl, expiresAt)<br/>Condition: attribute_not_exists(code)
+    D-->>A: OK
+    A-->>C: 201 { shortUrl }

@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant Q as SQS
+    participant L as Lambda
+    participant S as DynamoDB<br/>click_stats
+
+    Q->>L: バッチ(100 件 / 60 秒)
+    L->>L: (code, day) ごとに合算
+    L->>S: ADD count :n
+    L-->>Q: batchItemFailures

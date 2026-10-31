@@ -1,0 +1,9 @@
+flowchart TB
+    Client[クライアント] --> LB[ロードバランサ]
+    LB --> API[API サーバ<br/>複数台]
+    API -->|ID ブロック| Counter[(採番 DB)]
+    API -->|読み書き| KV[(URL ストア<br/>KV DB)]
+    API -->|参照| Cache[(キャッシュ)]
+    API -.->|クリック| Queue[[キュー]]
+    Queue -.-> Agg[集計ワーカー]
+    Agg -.-> Stats[(集計 DB)]

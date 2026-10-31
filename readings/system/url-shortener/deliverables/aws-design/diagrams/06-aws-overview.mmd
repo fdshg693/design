@@ -1,0 +1,14 @@
+flowchart LR
+    Client[クライアント] --> R53[Route 53]
+    R53 --> ALB[ALB]
+
+    subgraph VPC["VPC(3 AZ)"]
+        ALB --> ECS[ECS on Fargate<br/>API タスク × 3〜]
+        ECS --> EC[(ElastiCache Serverless<br/>Valkey)]
+    end
+
+    ECS -->|Gateway Endpoint| DDB[(DynamoDB<br/>urls / id_counter)]
+    ECS -.->|Interface Endpoint<br/>まとめて送信| SQS[[SQS 標準キュー]]
+    SQS -.-> L[Lambda<br/>集計]
+    L -.-> STATS[(DynamoDB<br/>click_stats)]
+    SQS -.->|失敗が続いたら| DLQ[[DLQ]]

@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant C as クライアント
+    participant A as API タスク
+    participant V as ElastiCache (Valkey)
+    participant D as DynamoDB urls
+
+    C->>A: GET /aZ3k9Qx
+    A->>V: GET aZ3k9Qx
+    alt キャッシュミス
+        A->>D: GetItem(結果整合性)
+        opt 見つからない
+            A->>D: GetItem(強い整合性)
+        end
+        A->>A: expiresAt を判定(過ぎていれば 410)
+        A->>V: SET ... EX min(24h, 残り期限)
+    end
+    A->>A: クリックをバッファに追加
+    A-->>C: 302 Location: longUrl
